@@ -1,0 +1,28 @@
+# ketik command dibawah
+mysql 
+
+# ketik di dalam shell mysql
+CREATE USER 'kelompokit25'@'%' IDENTIFIED BY 'passwordit25';
+CREATE USER 'kelompokit25'@'localhost' IDENTIFIED BY 'passwordit25';
+CREATE DATABASE dbkelompokit25;
+GRANT ALL PRIVILEGES ON *.* TO 'kelompokit25'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'kelompokit25'@'localhost';
+FLUSH PRIVILEGES;
+
+# setelag selesai 
+ctrl - c
+
+
+mysql -u kelompokit25 -ppasswordit25
+SHOW DATABASES;
+
+# ketik
+nano /etc/mysql/my.cnf
+
+#tambah baris paling bawah lalu save
+    [mysqld]
+    skip-networking=0
+    skip-bind-address
+
+# ketik
+service mysql restart
