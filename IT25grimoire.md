@@ -1,4 +1,4 @@
-![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/6218e38d-77ac-4cd1-89eb-edde1e39a3d7)# No 7
+# No 7
 
 - A. Round Robin
 
