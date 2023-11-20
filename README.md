@@ -1,4 +1,4 @@
-# Jarkom-Modul-3-IT25-2023
+![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/7b59ae3d-3b1f-4c36-92f8-91e1e0abc192)# Jarkom-Modul-3-IT25-2023
 
 ## Modul 3 Jarkom IT25
 
@@ -819,6 +819,117 @@ curl -u netics:ajkti25 10.76.2.2:81
 
 ## No 13
 Semua data yang diperlukan, diatur pada Denken dan harus dapat diakses oleh Frieren, Flamme, dan Fern. (13)
+
+Jalankan script setup.sh pada denken
+```bash
+#!/bin/bash
+
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update && apt install ne -y
+
+# masukan ke ~/.bashrc
+echo "echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update && apt install ne -y
+" > ~/.bashrc
+
+apt remove --purge *mysql* -y
+apt remove --purge *mariadb* -y
+rm -rf /etc/mysql /var/lib/mysql
+apt autoremove -y
+apt autoclean -y
+
+apt-get install mariadb-server -y
+
+service mysql start
+```
+pada denken ketikan comma 
+```
+mysql
+```
+untuk membukan mysql
+lalu untuk configurasi user ketikan
+```
+# ketik di dalam shell mysql
+CREATE USER 'kelompokit25'@'%' IDENTIFIED BY 'passwordit25';
+CREATE USER 'kelompokit25'@'localhost' IDENTIFIED BY 'passwordit25';
+CREATE DATABASE dbkelompokit25;
+GRANT ALL PRIVILEGES ON *.* TO 'kelompokit25'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'kelompokit25'@'localhost';
+FLUSH PRIVILEGES;
+SHOW DATABASES;
+```
+hasilnya akan seperti dibawah ini:
+![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/9d398b1e-57c2-4dd6-add7-9a374476fec3)
+
+
+setelah selesai tekan ctrl+c untuk keluar dari mysql lalu ketikan command
+```
+nano /etc/mysql/my.cnf
+```
+dan tambahkan pada baris paling bawah
+```
+    [mysqld]
+    skip-networking=0
+    skip-bind-address
+```
+lalu start service mysql dengan command
+```
+service mysql restart
+```
+
+### testing
+pada salah satu laravel worker jalankan [setup.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/laravelWorker/setup.sh) lalu ketikan command
+```
+mariadb --host=10.76.2.3 --port=3306 --user=kelompokit25 --password=passwordit25 dbkelompokit25 -e "SHOW DATABASES;"
+```
+hasilnya akan seperti ini:
+![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/92885351-ed16-4c99-a7fa-dac879456b92)
+
+
+## No 14
+Frieren, Flamme, dan Fern memiliki Riegel Channel sesuai dengan quest guide berikut. Jangan lupa melakukan instalasi PHP8.0 dan Composer (14)
+
+sama seperti nomor 13 masuk ke setiap laravel worker jalankan [setup.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/laravelWorker/setup.sh)
+
+### testing
+untuk mencoba apakah berhasil atau tidak lakukan command
+```
+curl localhost:8000
+```
+hasilnya akan seperti dibawah ini:
+![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/4ea250d1-2d8f-43f0-883e-e52e074e476b)
+
+
+## No 15
+Riegel Channel memiliki beberapa endpoint yang harus ditesting sebanyak 100 request dengan 10 request/second. Tambahkan response dan hasil testing pada grimoire.
+POST /auth/register (15)
+POST /auth/login (16)
+GET /me (17)
+
+Jalankan  [testing15.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/laravelWorker/testing15.sh) pada laravel worker untuk melakukan register dan 100 request dan 10 req/sekon
+
+hasilnya akan gagal 99 kali
+![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/5469745d-cbb7-4241-a23e-d9683f62885a)
+
+karena username itu harus unik jadi klo di lopping 100 kali akan sukses 1 kali karena username susah terpakai. register
+
+
+## No 16
+
+jalankan  [testing16.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/laravelWorker/testing16.sh) pada laravel worker  untuk melakukan login dan 100 request dan 10 req/sekon
+
+hasilnya akan gagal karena menggunakan satu wroker sehingga tidak efektif untuk menampung banyak request 
+
+## No 17
+jalankan  [testing17.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/laravelWorker/testing17.sh) pada laravel worker mengakses endpoint /me
+
+jadi setelah login akan di dapatkan login_output.txt itu yang dijadikan Beare token untuk testing
+
+## No 18
+Untuk memastikan ketiganya bekerja sama secara adil untuk mengatur Riegel Channel maka implementasikan Proxy Bind pada Eisen untuk mengaitkan IP dari Frieren, Flamme, dan Fern. (18)
+
+
+
 
 
 
