@@ -646,6 +646,7 @@ lalu ketik untuk  testing dengan 1000 request dan 100 request/second
 ```
 ab -n 1000 -c 100 -k http://10.76.2.2:81/
 ```
+#### Output
 ![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/4934d810-533e-44c4-8b19-6f9a80a2e522)
 
 ## No 8
@@ -667,3 +668,11 @@ ab -n 200 -c 10 -k http://10.76.2.2:83/                         (82 untuk algori
 ```
 
 Hasil analisis ada pada [Grimoire](IT25grimoire.md)
+
+## No 9
+Dengan menggunakan algoritma Round Robin, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 100 request dengan 10 request/second, kemudian tambahkan grafiknya pada grimoire. (9)
+
+untuk buka di elsen nomer ini apply rr1worker.sh untuk 1 worker, rr2worker.sh untuk 2 worker (satu-satu)
+
+[rr1worker.sh](Eisen - Load Balancer/rr1worker.sh)
+
