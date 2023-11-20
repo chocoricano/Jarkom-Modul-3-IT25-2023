@@ -1,10 +1,19 @@
 ![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/6218e38d-77ac-4cd1-89eb-edde1e39a3d7)# No 7
+
 - A. Round Robin
+
 ![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/02c67d12-409e-4168-8945-0daabbed429f)
+
 - B. Least Connection
+
 ![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/d1b5e0e3-2209-41a9-81a4-04d8213e9164)
+
 - C. Ip hash
+  
 ![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/303f4e6c-66ec-4f72-9b16-75928829f849)
+
+
+
 ***Grafik***
 ![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/26d9c1f0-26cc-4386-9196-f05f087199f3)
 Grafik yang diatas menunjukkan hasil benchmark tiga algoritma load balancing, antara algoritma Round Robin, Least Connection, dan IP Hash. benchmark dilakukan dengan mengirimkan 200 request dengan interval 10 requests per detik.
