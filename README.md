@@ -679,5 +679,13 @@ Script [rr1worker.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/bl
 Script [rr2worker.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Eisen%20-%20Load%20Balancer/rr2worker.sh)
 
 Script [rr3worker.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Eisen%20-%20Load%20Balancer/rr3worker.sh)
+saat sudah apply 1 script lakukan test
+
+### Testing
+ketikan command 
+```
+ab -n 100 -c 10 -k http://10.76.2.2:81/       (Pakai port 81 karena round robin 81)
+```
+output sama seperti [sebelumnya](#Output)
 
 
