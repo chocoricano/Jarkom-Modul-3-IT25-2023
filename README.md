@@ -666,4 +666,4 @@ ab -n 200 -c 10 -k http://10.76.2.2:82/                         (82 untuk algori
 ab -n 200 -c 10 -k http://10.76.2.2:83/                         (82 untuk algoritma IP hash)
 ```
 
-Hasil analisis ada pada [https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/IT25grimoire.md](grimoire)
+Hasil analisis ada pada [Grimoire](IT25grimoire.md)
