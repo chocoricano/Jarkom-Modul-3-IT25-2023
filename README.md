@@ -11,6 +11,9 @@
 ## Topologi 
 <a href="https://ibb.co/RH1v9N3"><img src="https://i.ibb.co/zf1nrFX/283197783-b7ae49b5-70ff-4520-b0b0-d4f740f09198.png" alt="283197783-b7ae49b5-70ff-4520-b0b0-d4f740f09198" border="0"></a>
 
+## Konfigurasi Awal
+Jalankan semua setup.sh yang ada pada github sesuai dengan namanya
+
 ## No 0
 diminta untuk melakukan register domain berupa riegel.canyon.yyy.com untuk worker Laravel dan granz.channel.yyy.com untuk worker PHP yang mengarah pada worker yang memiliki IP [prefix IP].x.1.
 
@@ -337,13 +340,331 @@ udhcpc: sending select for 10.76.4.14
 udhcpc: lease of 10.76.4.14 obtained, lease time 720
 artinya dia sudah dapat ip secara otomatis (dhcp nya bekerja) 
 
-## No 4, 5
+## No 4
 Client mendapatkan DNS dari Heiter dan dapat terhubung dengan internet melalui DNS tersebut (4)
-Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch3 selama 3 menit sedangkan pada client yang melalui Switch4 selama 12 menit. Dengan waktu maksimal dialokasikan untuk peminjaman alamat IP selama 96 menit (5)
 
 jika pada modul sebelumnya kita me assign nameserver 192.168.122.1  pada setiap node agar bisa internet, untuk soal nomer 4 kita disuruh assign ip dari Heiter yaitu 192.168.1.3 pada setiap dhcp client disini tinggal dimasukan pada conf sebelumnya
 ```
 option domain-name-servers 10.76.1.3;
 ```
  jadi akan teregister otomatis namservernya
+
+tapi jangan lupa pada heiter di set untuk di forward ke nameserver yang biasanya
+```bash
+options {
+    listen-on { 10.76.1.3; };  # IP Heiter
+    listen-on-v6 { none; };
+    directory "/var/cache/bind";
+
+
+    # Forwarders
+    forwarders {
+        192.168.122.1;  
+    };
+
+
+    # If there is no answer from the forwarders, don't attempt to resolve recursively
+    forward only;
+
+
+    dnssec-validation no;
+
+
+    auth-nxdomain no;    # conform to RFC1035
+    allow-query { any; };
+};
+```
+### Testing
+ketikan command
+```
+cat /etc/resolv.conf
+```
+
+dan outputnya akan
+```
+root@Stark:/# cat /etc/resolv.conf
+nameserver 10.76.1.3
+```
+maka nameserver sudah terdaftar
+
+## No 5
+Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch3 selama 3 menit sedangkan pada client yang melalui Switch4 selama 12 menit. Dengan waktu maksimal dialokasikan untuk peminjaman alamat IP selama 96 menit (5)
+Memasukan script pada setup.sh pada DHCP server
+```
+default-lease-time 180; # 3 menit dalam detik
+max-lease-time 5760; # 96 menit dalam detik
+
+default-lease-time 720; # 12 menit dalam detik
+max-lease-time 5760; # 96 menit dalam detik
+```
+jika membuka client maka akan terdapat output:
+```
+udhcpc: started, v1.30.1
+udhcpc: sending discover
+udhcpc: sending select for 10.76.4.14
+udhcpc: lease of 10.76.4.14 obtained, lease time 720
+```
+
+## No 6
+Pada masing-masing worker PHP, lakukan konfigurasi virtual host untuk website berikut dengan menggunakan php 7.3. (6)
+Lakukan Setup pada masing masing php worker dengan setup.sh dibawah:
+
+```bash
+#!/bin/bash
+
+# Update apt cache
+apt-get update
+
+# Install PHP dan dependencies lainnnya
+apt install -y lsb-release apt-transport-https ca-certificates wget
+wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+apt-get update
+apt install -y php7.3 php7.3-mbstring php7.3-xml php7.3-cli php7.3-common php7.3-intl php7.3-opcache php7.3-readline php7.3-mysql php7.3-fpm php7.3-curl unzip wget nginx
+
+# Start nginx service
+service nginx start
+
+# membuat direktori jarkom untuk menyimpan file web nya
+mkdir /var/www/jarkom
+
+#download file webnya dengan curl
+curl -L --insecure "https://drive.google.com/uc?export=download&id=1ViSkRq7SmwZgdK64eRbr5Fm1EGCTPrU1" -o granz.zip
+
+#unzip file webnya
+unzip granz.zip -d /var/www
+rm granz.zip
+
+mv /var/www/modul-3/* /var/www/jarkom/
+rm -rf /var/www/modul-3
+
+# Konfigurasi Nginx agar bisa mengakses file php
+echo 'server {
+    listen 80;
+    root /var/www/jarkom;
+    index index.php index.html index.htm;
+    server_name 10.76.3.1 10.76.3.2 10.76.3.3;
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+    }
+    location ~ /\.ht {
+        deny all;
+    }
+    
+    error_log /var/log/nginx/jarkom_error.log;
+    access_log /var/log/nginx/jarkom_access.log;
+}' >/etc/nginx/sites-available/jarkom.conf
+
+# Mengaktifkan konfigurasi jarkom
+ln -s --force /etc/nginx/sites-available/jarkom.conf /etc/nginx/sites-enabled/
+
+# Remove default Nginx configuration
+rm /etc/nginx/sites-enabled/default
+
+# Restart Nginx service
+service nginx restart
+service nginx status
+
+# Start PHP-FPM service
+service php7.3-fpm start
+service php7.3-fpm status
+```
+### Testing
+ketikan command
+```
+curl localhost
+```
+dan akan menghasilkan output berupa file html dari file yg sudah di download
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Riegel Canyon Map</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Riegel Canyon</h1>
+        <p>Request ini dihandle oleh: Linie-workerPHP<br> </p>
+        <p>Enter your name to validate:</p>
+        <form method="POST" action="index.php">
+            <input type="text" name="name" id="nameInput">
+            <button type="submit" id="submitButton">Submit</button>
+        </form>
+        <p id="greeting"></p>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>root@Linie-workerPHP:~#
+```
+
+
+## No 7
+Kepala suku dari Bredt Region memberikan resource server sebagai berikut:
+Lawine, 4GB, 2vCPU, dan 80 GB SSD.
+Linie, 2GB, 2vCPU, dan 50 GB SSD.
+Lugner 1GB, 1vCPU, dan 25 GB SSD.
+aturlah agar Eisen dapat bekerja dengan maksimal, lalu lakukan testing dengan 1000 request dan 100 request/second. (7)
+
+Secara tidak langsung soal ini menyuruh kita konfigurasi Elsen yang bertindak sebagai Load balancer
+run script setup6-7.sh isinya konfigurasi 3 load balancer dengan 3 algoritma berbeda
+- Round Robin
+- Least Connection
+- IP Hash
+
+```bash
+#!/bin/bash
+
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update && apt install ne -y
+
+# masukan ke ~/.bashrc
+echo "echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update && apt install ne -y
+" > ~/.bashrc
+
+apt autoremove nginx -y
+# instal dependencies
+
+apt install -y lsb-release apt-transport-https ca-certificates wget nginx apache2-utils
+service nginx start
+
+mkdir /etc/nginx/rahasisakita
+
+htpasswd -bc /etc/nginx/rahasisakita/htpasswd netics ajkit25
+# Mengatur load balancer dengan Round Robin
+cat > /etc/nginx/conf.d/load_balancer_round_robin.conf <<EOF
+upstream backend_round_robin {
+    server 10.76.3.1;
+    server 10.76.3.2;
+    server 10.76.3.3;
+}
+
+server {
+    listen 81;
+
+    location / {
+        proxy_pass http://backend_round_robin;
+    }
+
+    location /its {
+            rewrite ^/its(.*)$ https://www.its.ac.id$1 permanent;
+    }
+}
+EOF
+
+# Mengatur load balancer dengan Least Connection
+cat > /etc/nginx/conf.d/load_balancer_least_conn.conf <<EOF
+upstream backend_least_conn {
+    least_conn;
+    server 10.76.3.1;
+    server 10.76.3.2;
+    server 10.76.3.3;
+}
+
+server {
+    listen 82;
+    location / {
+        proxy_pass http://backend_least_conn;
+    }
+
+    location /its {
+            rewrite ^/its(.*)$ https://www.its.ac.id$1 permanent;
+    }
+}
+EOF
+
+# Mengatur load balancer dengan IP Hash
+cat > /etc/nginx/conf.d/load_balancer_ip_hash.conf <<EOF
+upstream backend_ip_hash {
+    ip_hash;
+    server 10.76.3.1;
+    server 10.76.3.2;
+    server 10.76.3.3;
+}
+
+server {
+    listen 83;
+    location / {
+        proxy_pass http://backend_ip_hash;
+    }
+
+    location /its {
+            rewrite ^/its(.*)$ https://www.its.ac.id$1 permanent;
+        }
+}
+EOF
+
+nginx -t
+# Restart Nginx untuk menerapkan konfigurasi
+service nginx restart
+```
+### Testing
+```
+curl localhost:81                                    (untuk Algoritma Round Robin)
+curl localhost:82			   (Least Connection)
+curl localhost:83 			   (IP Hash)
+```
+yang akan menghasilkan output
+```
+</html>root@Elsen:~# curl localhost:81
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Riegel Canyon Map</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Riegel Canyon</h1>
+        <p>Request ini dihandle oleh: Linie-workerPHP<br> </p>
+        <p>Enter your name to validate:</p>
+        <form method="POST" action="index.php">
+            <input type="text" name="name" id="nameInput">
+            <button type="submit" id="submitButton">Submit</button>
+        </form>
+        <p id="greeting"></p>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+````
+
+masuk ke worker Elsen
+pertama isntall dulu
+```
+apt-get update 
+apt-get install apache2-utils -y
+```
+
+lalu ketik untuk  testing dengan 1000 request dan 100 request/second
+```
+ab -n 1000 -c 100 -k http://10.76.2.2:81/
+```
+![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/4934d810-533e-44c4-8b19-6f9a80a2e522)
+
+## No 8
+Analisa pada load balancer dengan 200 request dan 10 request/second
+
+### testing
+pada worker:
+```
+apt install htop -y
+htop
+```
+```
+pada client:
+apt install apache2-utils -y
+
+ab -n 200 -c 10 -k http://10.76.2.2:81/                     (ingat port 81 untuk algoritma round robin)
+ab -n 200 -c 10 -k http://10.76.2.2:82/                         (82 untuk algoritma Least Connection)
+ab -n 200 -c 10 -k http://10.76.2.2:83/                         (82 untuk algoritma IP hash)
+
+
+```
 
