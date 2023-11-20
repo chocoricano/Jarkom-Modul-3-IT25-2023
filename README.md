@@ -928,7 +928,7 @@ jadi setelah login akan di dapatkan login_output.txt itu yang dijadikan Beare to
 ## No 18
 Untuk memastikan ketiganya bekerja sama secara adil untuk mengatur Riegel Channel maka implementasikan Proxy Bind pada Eisen untuk mengaitkan IP dari Frieren, Flamme, dan Fern. (18)
 
-
+Masuk ke elshen lalu jalankan script 1820setup.sh
 
 
 
