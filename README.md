@@ -673,6 +673,7 @@ Hasil analisis ada pada [Grimoire](IT25grimoire.md)
 Dengan menggunakan algoritma Round Robin, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 100 request dengan 10 request/second, kemudian tambahkan grafiknya pada grimoire. (9)
 
 untuk buka di elsen nomer ini apply rr1worker.sh untuk 1 worker, rr2worker.sh untuk 2 worker (satu-satu)
+[Grimoire](Eisen - Load Balancer/rr1worker.sh)
 
 [rr1worker.sh](Eisen - Load Balancer/rr1worker.sh)
 
