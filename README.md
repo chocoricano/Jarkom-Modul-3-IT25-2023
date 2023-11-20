@@ -7,7 +7,7 @@
 - ANDYANA MUHANDHATUL NABILA - 5027211029
 - ANDREAS TIMOTIUS PARHORASAN SIHOMBING - 5027211019
 ## Topologi 
-
+<a href="https://ibb.co/RH1v9N3"><img src="https://i.ibb.co/zf1nrFX/283197783-b7ae49b5-70ff-4520-b0b0-d4f740f09198.png" alt="283197783-b7ae49b5-70ff-4520-b0b0-d4f740f09198" border="0"></a>
 
 ## No 0
 diminta untuk melakukan register domain berupa riegel.canyon.yyy.com untuk worker Laravel dan granz.channel.yyy.com untuk worker PHP yang mengarah pada worker yang memiliki IP [prefix IP].x.1.
