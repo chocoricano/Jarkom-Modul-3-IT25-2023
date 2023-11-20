@@ -664,7 +664,6 @@ apt install apache2-utils -y
 ab -n 200 -c 10 -k http://10.76.2.2:81/                     (ingat port 81 untuk algoritma round robin)
 ab -n 200 -c 10 -k http://10.76.2.2:82/                         (82 untuk algoritma Least Connection)
 ab -n 200 -c 10 -k http://10.76.2.2:83/                         (82 untuk algoritma IP hash)
-
-
 ```
 
+Hasil analisis ada pada [https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/IT25grimoire.md](grimoire)
