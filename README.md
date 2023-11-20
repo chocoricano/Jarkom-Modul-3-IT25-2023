@@ -12,7 +12,8 @@
 ## No 0
 diminta untuk melakukan register domain berupa riegel.canyon.yyy.com untuk worker Laravel dan granz.channel.yyy.com untuk worker PHP yang mengarah pada worker yang memiliki IP [prefix IP].x.1.
 
-## Configurasi aura DHCP relay
+
+## Konfigurasi aura DHCP relay
 ```
 echo nameserver 192.168.122.1 > /etc/resolv.conf
 apt update && apt install ne -y
@@ -56,3 +57,6 @@ sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
 service isc-dhcp-relay restart
 
 ```
+
+dengan script setup.sh diatas pada aura
+## Konfigurasi Himmel
