@@ -688,4 +688,139 @@ ab -n 100 -c 10 -k http://10.76.2.2:81/       (Pakai port 81 karena round robi
 ```
 output sama seperti [sebelumnya](#Output)
 
+## No 10
+Selanjutnya coba tambahkan konfigurasi autentikasi di LB dengan dengan kombinasi username: “netics” dan password: “ajkyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/rahasisakita/ (10)
+
+untuk apply, masuk ke Elsen lalu run setup.sh dan run [no12.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Himmel/no12.sh) pada Himmel dan restart client (sein dkk)
+
+### Testing
+```
+curl -u netics:ajkit25 localhost:81                  (Pada Elsen)
+curl -u netics:ajkti25 10.76.2.2:81                 (pada Sein outputnya harusnya sukses) 
+curl -u netics:ajkti25 10.76.2.2:81		(Pada Stark karena IP nya random jadi forbidden)
+```
+
+## No 10
+Lalu buat untuk setiap request yang mengandung /its akan di proxy passing menuju halaman https://www.its.ac.id. (11) hint: (proxy_pass)
+```
+location /its {
+            rewrite ^/its(.*)$ https://www.its.ac.id$1 permanent;
+    }
+```
+script diatas ada sudah ada pada [setup.sh elshen](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Eisen%20-%20Load%20Balancer/setup.sh)
+### Testing
+```
+apt install lynx
+curl -u netics:ajkti25 -i 10.76.2.2:81/its 		 (pada elsen outputnya harusnya sukses)
+lynx 10.76.2.2:81/its 
+```
+
+## No 12
+Selanjutnya LB ini hanya boleh diakses oleh client dengan IP [Prefix IP].3.69, [Prefix IP].3.70, [Prefix IP].4.167, dan [Prefix IP].4.168. (12) hint: (fixed in dulu clinetnya)
+
+Konfigurasi pembatasan akses IP dan berikan juga akses untuk localhost
+```
+        allow 127.0.0.1;
+        allow 10.76.3.69;
+        allow 10.76.3.70;
+        allow 10.76.4.167;
+        allow 10.76.4.168;
+        deny all;
+```
+no12.sh pada himmel
+```bash
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update && apt install ne -y
+
+# masukan ke ~/.bashrc
+echo "echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update && apt install ne -y
+" > ~/.bashrc
+
+
+apt-get install isc-dhcp-server -y
+
+echo '#DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
+
+# Path to dhcpd PID file (default: /var/run/dhcpd.pid).
+#DHCPDv4_PID=/var/run/dhcpd.pid
+#DHCPDv6_PID=/var/run/dhcpd6.pid
+
+# Additional options to start dhcpd with.
+#       Dont use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+#OPTIONS=""
+
+# On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+#       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+INTERFACESv4="eth0"
+#INTERFACESv6=""' > /etc/default/isc-dhcp-server
+
+#tambah di paling bawah /etc/dhcp/dhcpd.conf
+echo '# Konfigurasi untuk client yang terhubung melalui Switch3\
+host Revolter {
+    hardware ethernet 92:3a:3c:c7:ed:98;
+    fixed-address 10.76.3.69;
+    option host-name "Revolter";
+}
+
+host Sein {
+    hardware ethernet ae:70:84:b0:03:11;
+    fixed-address 10.76.4.167;
+    option host-name "Sein";
+}
+
+subnet 10.76.3.0 netmask 255.255.255.0 {
+    range 10.76.3.16 10.76.3.32;
+    range 10.76.3.64 10.76.3.80;
+    option routers 10.76.3.254;
+    option broadcast-address 10.76.3.255;
+    option domain-name-servers 10.76.1.3; # Ganti x.x dengan alamat IP aktual Heiter
+    default-lease-time 180; # 3 menit dalam detik
+    max-lease-time 5760; # 96 menit dalam detik
+}
+
+# Konfigurasi untuk client yang terhubung melalui Switch4
+subnet 10.76.4.0 netmask 255.255.255.0 {
+    range 10.76.4.12 10.76.4.20;
+    range 10.76.4.160 10.76.4.168;
+    option routers 10.76.4.254;
+    option broadcast-address 10.76.4.255;
+    option domain-name-servers 10.76.1.3; # Ganti x.x dengan alamat IP aktual Heiter
+    default-lease-time 720; # 12 menit dalam detik
+    max-lease-time 5760; # 96 menit dalam detik
+}
+
+subnet 10.76.1.0 netmask 255.255.255.0 {
+    option routers 10.76.1.1;
+    option broadcast-address 10.76.1.255;
+    option domain-name-servers 10.76.1.3; # Ganti dengan alamat DNS yang diinginkan
+}
+
+
+subnet 10.76.2.0 netmask 255.255.255.0 {
+    option routers 10.76.2.1;
+    option broadcast-address 10.76.2.255;
+    option domain-name-servers 10.76.1.3; # Ganti dengan alamat DNS yang diinginkan
+}
+' > /etc/dhcp/dhcpd.conf
+
+rm /var/run/dhcpd.pid
+# restart dhcp relay
+service isc-dhcp-server stop
+service isc-dhcp-server start
+```
+Ip yang di fixed hanya Revolte dan Sein jadi jika diakses dari 2 itu bisa dan 2 client sisanya tidak bisa
+
+### Testing
+command pada client Revolte dan Sein
+```
+curl -u netics:ajkti25 10.76.2.2:81
+```
+
+## No 13
+Semua data yang diperlukan, diatur pada Denken dan harus dapat diakses oleh Frieren, Flamme, dan Fern. (13)
+
+
+
+
 
