@@ -674,5 +674,10 @@ Dengan menggunakan algoritma Round Robin, lakukan testing dengan menggunakan 3 w
 
 untuk buka di elsen nomer ini apply rr1worker.sh untuk 1 worker, rr2worker.sh untuk 2 worker (satu-satu)
 
-[rr1worker.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Eisen%20-%20Load%20Balancer/rr1worker.sh)
+Script [rr1worker.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Eisen%20-%20Load%20Balancer/rr1worker.sh)
+
+Script [rr2worker.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Eisen%20-%20Load%20Balancer/rr2worker.sh)
+
+Script [rr3worker.sh](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/blob/main/Eisen%20-%20Load%20Balancer/rr3worker.sh)
+
 
