@@ -1,4 +1,4 @@
-![image](https://github.com/chocoricano/Jarkom-Modul-3-IT25-2023/assets/56831859/aab87e77-16ad-438c-9ff7-ae317a536c0d)# Jarkom-Modul-3-IT25-2023
+# Jarkom-Modul-3-IT25-2023
 
 ## Modul 3 Jarkom IT25
 
