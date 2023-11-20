@@ -36,3 +36,23 @@ Peningkatan kapasitas load balancer tidak linear. Peningkatan kapasitas dari jum
 
 ### Kesumpulan
 Berdasarkan hasil benchamark yang diminta pada modul ini dapat disimpulkan bahwa jika jumlah worker yang lebih banyak akan meningkatkan kapasitas load balancer. Namun, perlu dipertimbangkan bahwa peningkatan kapasitas tidak linear dan ada overhead yang harus ditanggung oleh load balancer.
+
+
+# Lampiran
+
+Testing menggunakan 200 request dan 10 request/second 
+- A. Roundrobin
+
+- B. Least Connection
+
+- C. Ip Hash
+
+
+Testing dengan 100 request dan 10 request/second 
+
+- A. Roundrobin
+
+- B. Least Connection
+
+- C. Ip Hash
+
